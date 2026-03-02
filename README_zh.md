@@ -1,5 +1,5 @@
 <div align="center">
-    <img alt="LMM-R1 logo" src="./docs/lmm-r1-logo-panda.png" style="height: 140px;" />
+    <img alt="LMM-R1 logo" src="output/lmm-r1-logo-panda.png" style="height: 140px;" />
 </div>
 
 # LMM-R1: 通过两阶段规则型强化学习增强3B大型多模态模型的推理能力
@@ -47,16 +47,16 @@
 
 这种方法克服了数据限制，同时显著提高了模型在各种推理任务上的表现。
 
-![pipeline](./docs/model.jpg)
+![pipeline](output/model.jpg)
 
 ## 例子
 **几何题目:**
 
-![motivation](./docs/motivation.png)
+![motivation](output/motivation.png)
 
 **推箱子:**
 
-![sobokan_deom](./docs/sokoban_demo.gif)
+![sobokan_deom](output/sokoban_demo.gif)
  
 ## 快速开始
 
@@ -111,7 +111,7 @@ LMM-R1要求多模态提示数据集采用OpenAI兼容的消息格式：
 
 ```bash
 # 使用纯文本数据训练(FRE-Text)
-bash examples/scripts/lmm_r1/train_fre_text.sh
+bash examples/scripts/lmm_r1/train_grpo_text.sh
 
 # 使用多模态数据训练(FRE-Multi)作为比较
 bash examples/scripts/lmm_r1/train_fre_multi.sh
@@ -152,7 +152,7 @@ bash examples/scripts/lmm_r1/train_direct_rl_geo.sh
 
 LMM-R1是[OpenRLHF](https://github.com/OpenRLHF/OpenRLHF)的一个分支，旨在提供高性能的LMM强化学习基础设施，以增强多模态推理能力。我们目前支持LMM的PPO/REINFORCE++/RLOO训练，并且与[R1-V](https://github.com/Deep-Agent/R1-V)(GRPO)相比，实现了4.7倍的加速(RLOO)。
 
-![time_compare](./docs/time_compare.jpg)
+![time_compare](output/time_compare.jpg)
 
 - 支持LMM训练(Qwen2-VL, Qwen2.5-VL)
 - 基于Ray的分布式[PPO](./examples/scripts/train_ppo_llama_ray.sh)和[REINFORCE++/RLOO](./examples/scripts/train_reinforce_llama_ray.sh)实现

@@ -7,16 +7,16 @@
 
 # Base paths - MODIFY THESE
 export WORKSPACE_DIR="$(pwd)"                      # Path to project root directory
-export DATASET_PATH="./data/deepscaler/deepscaler_message.jsonl"  # Path to your dataset
-export PRETRAIN_MODEL_PATH="./models/Qwen2.5-VL-3B-Instruct"  # Path to pretrained model
-export SAVE_PATH="/checkpoints"                   # Absolute path to save checkpoints
+export DATASET_PATH="../datas/deepscaler/deepscaler_message.jsonl"  # Path to your dataset
+export PRETRAIN_MODEL_PATH="../models/Qwen2.5-VL-3B-Instruct"  # Path to pretrained model
+export SAVE_PATH="../outputs/checkpoints"                   # Absolute path to save checkpoints
 
 # Model configuration
-export MODEL_NAME="lmm-r1-fre-text"              # Name for this training run
+export MODEL_NAME="qwen2.5_vl_3B-text-dr_grpo"              # Name for this training run
 
 # Wandb configuration (optional)
 export WANDB_DIR="${WORKSPACE_DIR}"                # Directory for wandb files
-export WANDB_API_KEY="YOUR_WANDB_API_KEY"          # Your wandb API key (if online)
+export WANDB_API_KEY="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"          # Your wandb API key (if online)
 
 # =================== Script Execution ===================
 # You shouldn't need to modify anything below this line
@@ -38,7 +38,7 @@ mkdir -p "${CUR_LOG_DIR}"
 
 # Print help information
 echo "================================================================"
-echo "LMM-R1 FRE-Text Training"
+echo "Qwen2.5-VL-3B-Text-dr_grpo Training"
 echo "================================================================"
 echo "Model name: ${MODEL_NAME}"
 echo "Dataset: ${DATASET_PATH}"
@@ -57,7 +57,6 @@ ray start --head --node-ip-address 0.0.0.0 --num-gpus 8 --temp-dir ~/.cache/ray
 # Start remote reward model server
 echo "Starting remote reward model server..."
 python -m openrlhf.models.remote_rm.math_verifier \
-    --dataset "${DATASET_PATH}" \
     --input_key message \
     --prompt-template chatml 2>&1 | tee -a "${CUR_LOG_DIR}/remote_rm.log" &
 REMOTE_RM_PID=$!
@@ -68,13 +67,13 @@ ray job submit --address="http://127.0.0.1:8265" \
    --runtime-env-json="{\"working_dir\": \"${WORKSPACE_DIR}\",\"env_vars\":{\"VLLM_USE_V1\":\"1\",\"VLLM_ENABLE_V1_MULTIPROCESSING\":\"0\"}}" \
    -- python -m openrlhf.cli.train_ppo_ray \
    --ref_num_nodes 1 \
-   --ref_num_gpus_per_node 8 \
+   --ref_num_gpus_per_node 4 \
    --remote_rm_url http://127.0.0.1:5000/get_reward \
    --actor_num_nodes 1 \
-   --actor_num_gpus_per_node 8 \
+   --actor_num_gpus_per_node 4 \
    --critic_num_nodes 1 \
-   --critic_num_gpus_per_node 8 \
-   --vllm_num_engines 8 \
+   --critic_num_gpus_per_node 4 \
+   --vllm_num_engines 4 \
    --vllm_tensor_parallel_size 1 \
    --colocate_all_models \
    --vllm_enable_sleep \
@@ -86,7 +85,7 @@ ray job submit --address="http://127.0.0.1:8265" \
    --micro_train_batch_size 2 \
    --train_batch_size 256 \
    --micro_rollout_batch_size 2 \
-   --rollout_batch_size 256 \
+   --rollout_batch_size 128 \
    --temperature 1.0 \
    --n_samples_per_prompt 16 \
    --max_epochs 1 \
@@ -113,7 +112,7 @@ ray job submit --address="http://127.0.0.1:8265" \
    --load_checkpoint \
    --use_wandb ${WANDB_API_KEY} \
    --wandb_run_name ${MODEL_NAME} \
-   --wandb_group "lmm-r1-training" \
+   --wandb_group "qwen2.5-VL-3B-text-dr_grpo" \
    --use_tensorboard ${LOG_DIR} > >(tee -a "${CUR_LOG_DIR}/train.log") 2>&1 &
 
 TRAIN_PID=$!

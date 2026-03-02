@@ -65,7 +65,7 @@ setup(
     packages=find_packages(
         exclude=(
             "data",
-            "docs",
+            "output",
             "examples",
         )
     ),

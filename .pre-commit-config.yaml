@@ -28,7 +28,7 @@ repos:
     hooks:
       - id: isort
         name: Format imports
-        exclude: docs/
+        exclude: output/
 
   - repo: https://github.com/psf/black
     rev: 25.1.0

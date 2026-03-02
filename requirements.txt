@@ -4,7 +4,6 @@ datasets
 deepspeed==0.16.7
 einops
 flask
-flash-attn==2.7.4.post1
 isort
 jsonlines
 loralib
@@ -18,8 +17,6 @@ pynvml>=12.0.0
 qwen_vl_utils
 ray[default]==2.43.0
 tensorboard
-torch
-torchvision
 torchmetrics
 tqdm
 transformers==4.51.3
